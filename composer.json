@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-0": { 
-            "TSS\\AutomailerBundle\\TSSAutomailerBundle": ""
+            "TSS\\AutomailerBundle": ""
          }
     },
     "target-dir": "TSS/AutomailerBundle"
