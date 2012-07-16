@@ -1,0 +1,57 @@
+<h1>Automailer list</h1>
+
+<table class="records_list">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Fromemail</th>
+            <th>Fromname</th>
+            <th>Toemail</th>
+            <th>Subject</th>
+            <th>Body</th>
+            <th>Altbody</th>
+            <th>Createdat</th>
+            <th>Sentat</th>
+            <th>Ishtml</th>
+            <th>Issent</th>
+            <th>Isfailed</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('automailer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td>{{ entity.fromEmail }}</td>
+            <td>{{ entity.fromName }}</td>
+            <td>{{ entity.toEmail }}</td>
+            <td>{{ entity.subject }}</td>
+            <td>{{ entity.body }}</td>
+            <td>{{ entity.altBody }}</td>
+            <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{% if entity.sentAt %}{{ entity.sentAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{{ entity.isHtml }}</td>
+            <td>{{ entity.isSent }}</td>
+            <td>{{ entity.isFailed }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('automailer_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('automailer_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('automailer_new') }}">
+            Create a new entry
+        </a>
+    </li>
+</ul>
