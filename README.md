@@ -33,7 +33,7 @@ Installation instructions:
     }
 ```
 
-- Change Swiftmailer spool type in ```/app/config.yml``` :
+- Change Swiftmailer spool type in ```/app/config.yml```:
 
     ```
     swiftmailer:
