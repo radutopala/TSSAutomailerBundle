@@ -5,7 +5,7 @@ Swiftmailer Spool for Doctrine packaged into a Symfony2 Bundle
 
 Installation instructions:
 
-- Easiest way to install is via composer, add those lines to composer.json:
+- Easiest way to install is via composer, add those lines to ```./composer.json```:
     
     
       ```
