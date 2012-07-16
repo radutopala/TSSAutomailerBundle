@@ -5,6 +5,22 @@ Swiftmailer Spool for Doctrine packaged into a Symfony2 Bundle
 
 Installation instructions:
 
+- Easiest way to install is via composer, add those lines to composer.lock:
+    
+    
+      ```
+      "packages": [
+        ...
+        {
+            "package": "tss/automailer-bundle",
+            "version": "dev-master"
+        }
+      ]
+```
+
+ 
+  and then run ```composer.phar install```
+
 - Change spool type in ```/app/config.yml``` :
 
     ```
