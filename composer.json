@@ -18,8 +18,7 @@
     },
     "autoload": {
         "psr-0": { 
-            "Symfony\\Bundle\\SwiftmailerBundle": "",
-            "TSS\\Bundle\\TSSAutomailerBundle": ""
+            "TSS\\AutomailerBundle\\TSSAutomailerBundle": ""
          }
     },
     "target-dir": "TSS/AutomailerBundle"
