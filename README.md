@@ -21,7 +21,19 @@ Installation instructions:
  
   and then run ```composer.phar install```
 
-- Change spool type in ```/app/config.yml``` :
+- Then enable the bundle in ```./app/AppKernel.php```:
+    
+    ```
+    public function registerBundles()
+    {
+        $bundles = array(
+                ...
+                new TSS\AutomailerBundle\TSSAutomailerBundle(),
+            );
+    }
+```
+
+- Change Swiftmailer spool type in ```/app/config.yml``` :
 
     ```
     swiftmailer:
