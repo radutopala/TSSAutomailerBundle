@@ -18,28 +18,28 @@ class Automailer
      * 
      * @var integer $id
      */
-    public $id;
+    private $id;
     
     /**
      * @var string $fromEmail
      * 
      * @ORM\Column(name="from_email", type="string", length=255, nullable=false)
      */
-    public $fromEmail;
+    private $fromEmail;
     
     /**
      * @var string $fromName
      * 
      * @ORM\Column(name="from_name", type="string", length=255)
      */
-    public $fromName;
+    private $fromName;
     
     /**
      * @var string $toEmail
      * 
      * @ORM\Column(name="to_email", type="string", length=255, nullable=false)
      */
-    public $toEmail;
+    private $toEmail;
     
     /**
 	 * @var text $subject
@@ -47,7 +47,7 @@ class Automailer
 	 * @ORM\Column(name="subject", type="text", nullable=false)
 	 *
 	 */
-	public $subject;
+	private $subject;
 	
 	/**
 	 * @var text $body
@@ -55,7 +55,7 @@ class Automailer
 	 * @ORM\Column(name="body", type="text", nullable=false)
 	 *
 	 */
-	public $body;
+	private $body;
 	
 	/**
 	 * @var text $altBody
@@ -63,7 +63,7 @@ class Automailer
 	 * @ORM\Column(name="alt_body", type="text", nullable=false)
 	 *
 	 */
-	public $altBody;
+	private $altBody;
 	
 	/**
 	 * @var text $swift_message
@@ -71,49 +71,49 @@ class Automailer
 	 * @ORM\Column(name="swift_message", type="text", nullable=false)
 	 *
 	 */
-	public $swiftMessage;
+	private $swiftMessage;
             
     /**
      * @var datetime $createdAt
      * 
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
-    public $createdAt;       
+    private $createdAt;       
     
     /**
      * @var datetime $sentAt
      * 
      * @ORM\Column(name="sent_at", type="datetime", nullable=true)
      */
-    public $sentAt;
+    private $sentAt;
     
     /**
      * @var boolean $isHtml
      *
      * @ORM\Column(name="is_html", type="boolean", nullable=false)
      */
-    public $isHtml;
+    private $isHtml;
     
     /**
      * @var boolean $isSending
      *
      * @ORM\Column(name="is_sending", type="boolean", nullable=true)
      */
-    public $isSending;
+    private $isSending;
     
     /**
      * @var boolean $isSent
      *
      * @ORM\Column(name="is_sent", type="boolean", nullable=true)
      */
-    public $isSent;
+    private $isSent;
     
     /**
      * @var boolean $isFailed
      *
      * @ORM\Column(name="is_failed", type="boolean", nullable=true)
      */
-    public $isFailed;
+    private $isFailed;
     
     
     public function __construct()
