@@ -30,6 +30,18 @@ Installation instructions:
     }
 ```
 
+- If your project uses Entity Manager mappings, you need to include TSSAutomailerBundle as well, in ```./app/config.yml```:
+
+    ```
+    orm:
+        ...
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    ...
+                    TSSAutomailerBundle: ~
+
 - Change Swiftmailer spool type in ```./app/config.yml```:
 
     ```
