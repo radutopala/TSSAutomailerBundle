@@ -61,11 +61,10 @@ You can also test the spool by adding a new email with:
 
     app/console automailer:test --email=info@trisoft.ro
     
-Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with ```swiftmailer:spool:send``` to a queue/tube. This feature is activated automatically once a new email is sent thourgh mailer, if pheanstalk is installed and if you add this inside ```./app/config.yml```:
-   
-   ```
-   tss_automailer:
-     beanstalk: true
-   ```
+Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with ```swiftmailer:spool:send``` to a queue/tube. This feature is activated automatically once a new email is sent through mailer, if pheanstalk is installed and if you add this inside ```./app/config.yml```:
+```
+tss_automailer:
+  beanstalk: true
+```
     
 Enjoy :)
