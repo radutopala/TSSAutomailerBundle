@@ -105,16 +105,19 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         $count = 0;
         $time = time();
         
-        $limit = !$this->getMessageLimit()?50:$this->getMessageLimit();
+        $limit = !$this->getMessageLimit()? 50 : $this->getMessageLimit();
         
         $mails = $this->_em->getRepository("TSSAutomailerBundle:Automailer")->findNext($limit);
-        
+
+        //first mark all for sending
         foreach ($mails as $mail) {
             
             $mail->setIsSending(1);
             $this->_em->persist($mail);
             $this->_em->flush();
-            
+        }
+
+        foreach ($mails as $mail) {
             if($transport->send($mail->getSwiftMessage(), $failedRecipients))
             {
                 $count++;

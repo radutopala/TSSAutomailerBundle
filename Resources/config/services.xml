@@ -6,11 +6,16 @@
 
     <parameters>
         <parameter key="swiftmailer.spool.automailer.class">TSS\AutomailerBundle\Library\AutomailerSpool</parameter>
+        <parameter key="automailer.plugin.beanstalk.class">TSS\AutomailerBundle\Library\BeanstalkPlugin</parameter>
     </parameters>
 
     <services>
         <service id="swiftmailer.spool.automailer" class="%swiftmailer.spool.automailer.class%" public="false">
             <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="automailer.plugin.beanstalk" class="%automailer.plugin.beanstalk.class%" public="false">
+            <argument type="service" id="service_container" />
         </service>
     </services>
     

@@ -24,5 +24,9 @@ class TSSAutomailerExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        if ($config['beanstalk']) {
+            $container->getDefinition('automailer.plugin.beanstalk')->addTag('swiftmailer.plugin');
+        }
     }
 }

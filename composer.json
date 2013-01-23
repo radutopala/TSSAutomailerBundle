@@ -16,6 +16,10 @@
         "symfony/swiftmailer-bridge": "2.1.*",
         "symfony/swiftmailer-bundle": ">=2.1.0"
     },
+    "suggest": {
+        "beanstalkd-binary": "http://kr.github.com/beanstalkd/",
+        "leezy/pheanstalk-bundle": "Allows integration with beanstalk queue, through internal BeanstalkPlugin"
+    },
     "autoload": {
         "psr-0": { 
             "TSS\\AutomailerBundle": ""
