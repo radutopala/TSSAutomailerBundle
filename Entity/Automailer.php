@@ -86,6 +86,13 @@ class Automailer
      * @ORM\Column(name="sent_at", type="datetime", nullable=true)
      */
     private $sentAt;
+
+    /**
+     * @var datetime $startedSendingAt
+     *
+     * @ORM\Column(name="started_sending_at", type="datetime", nullable=true)
+     */
+    private $startedSendingAt;
     
     /**
      * @var boolean $isHtml
@@ -304,11 +311,33 @@ class Automailer
     /**
      * Get sentAt
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getSentAt()
     {
         return $this->sentAt;
+    }
+
+    /**
+     * Get startedSendingAt
+     *
+     * @return datetime 
+     */
+    public function getStartedSendingAt()
+    {
+        return $this->startedSendingAt;
+    }
+
+    /**
+     * Set startedSendingAt
+     *
+     * @param datetime $startedSendingAt
+     * @return Automailer
+     */
+    public function setStartedSendingAt($startedSendingAt)
+    {
+        $this->startedSendingAt = $startedSendingAt;
+        return $this;
     }
 
     /**

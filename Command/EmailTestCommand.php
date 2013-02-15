@@ -34,7 +34,7 @@ class EmailTestCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {            
         $message = \Swift_Message::newInstance();
-        $message->setSubject("Automailer test email");
+        $message->setSubject("Automailer test email ".uniqid());
         $message->setFrom('info@trisoft.ro', 'Tri Software Solutions');
         $message->setTo($input->getOption('email'));
         $message->setBody($this->getContainer()->get('templating')->render("TSSAutomailerBundle:Email:test.html.twig",array('email' => $input->getOption('email'))), 'text/html');

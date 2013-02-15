@@ -74,15 +74,9 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     /**
      * Execute a recovery if for anyreason a process is sending for too long
      */
-    public function recover()
+    public function recover($timeout = 900)
     {
-        $mails = $this->_em->getRepository("TSSAutomailerBundle:Automailer")->findSending();
-        
-        foreach ($mails as $mail) {
-            $mail->setIsSending(0);
-            $this->_em->persist($mail);
-            $this->_em->flush();
-        }
+        return $this->_em->getRepository("TSSAutomailerBundle:Automailer")->recoverSending($timeout);
     }
 
     /**
@@ -99,11 +93,6 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
             $transport->start();
         }
 
-        /**
-         * recover emails that remained with is_sending:true
-         */
-        $this->recover();
-
         $failedRecipients = (array) $failedRecipients;
         $count = 0;
         $time = time();
@@ -116,6 +105,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         foreach ($mails as $mail) {
             
             $mail->setIsSending(1);
+            $mail->setStartedSendingAt(new \DateTime());
             $this->_em->persist($mail);
             $this->_em->flush();
         }

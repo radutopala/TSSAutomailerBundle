@@ -19,10 +19,13 @@ class AutomailerRepository extends EntityRepository
 		return $query->getResult();
     }
     
-    public function findSending()
+    public function recoverSending($timeout = 900)
     {
-        $query = $this->getEntityManager()->createQuery("SELECT am FROM TSSAutomailerBundle:Automailer am WHERE am.isSending = :is_sending")
-				->setParameter('is_sending', 1);
-		return $query->getResult();
+        $timeoutDate = new \DateTime();
+        $timeoutDate->modify('-'.$timeout.' seconds');
+
+        $query = $this->getEntityManager()->getConnection()->query('UPDATE automailer SET is_sending = 0 WHERE is_sending = 1 AND started_sending_at <= "'.$timeoutDate->format('Y-m-d H:i:s').'"');
+
+		return $query->execute();
     }
 }
