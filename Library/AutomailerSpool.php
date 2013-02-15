@@ -137,6 +137,8 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
             
            
             if ($this->getTimeLimit() && (time() - $time) >= $this->getTimeLimit()) {
+                $this->recover();
+
                 break;
             }
         }
