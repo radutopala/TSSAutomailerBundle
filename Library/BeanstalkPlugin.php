@@ -39,7 +39,7 @@ class BeanstalkPlugin implements \Swift_Events_SendListener
 
             $pheanstalk
                 ->useTube('automailer')
-                ->put("swiftmailer:spool:send --time-limit=500");
+                ->put("swiftmailer:spool:send --message-limit=1");
         }
     }
 }
