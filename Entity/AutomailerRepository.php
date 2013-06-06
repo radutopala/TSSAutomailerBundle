@@ -12,9 +12,9 @@ class AutomailerRepository extends EntityRepository
     public function findNext($limit)
     {
         $query = $this->getEntityManager()->createQuery("SELECT am FROM TSSAutomailerBundle:Automailer am WHERE am.isSent = :is_sent AND am.isFailed = :is_failed AND am.isSending = :is_sending ORDER BY am.createdAt ASC")
-				->setParameter('is_sent', 0)
-				->setParameter('is_failed', 0)
-				->setParameter('is_sending', 0)
+				->setParameter('is_sent', false)
+				->setParameter('is_failed', false)
+				->setParameter('is_sending', false)
 				->setMaxResults($limit);
 		return $query->getResult();
     }
@@ -24,8 +24,9 @@ class AutomailerRepository extends EntityRepository
         $timeoutDate = new \DateTime();
         $timeoutDate->modify('-'.$timeout.' seconds');
 
-        $query = $this->getEntityManager()->getConnection()->query('UPDATE automailer SET is_sending = 0 WHERE is_sending = 1 AND started_sending_at <= "'.$timeoutDate->format('Y-m-d H:i:s').'"');
+        $query = $this->getEntityManager()->createQuery("UPDATE TSSAutomailerBundle:Automailer am SET am.isSending = false WHERE am.isSending = true AND am.startedSendingAt <= :timeout_date")
+				->setParameter('timeout_date', $timeoutDate);
 
-		return $query->execute();
+		return $query->getResult();
     }
 }
