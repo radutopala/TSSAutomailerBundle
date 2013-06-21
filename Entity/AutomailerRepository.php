@@ -27,6 +27,6 @@ class AutomailerRepository extends EntityRepository
         $query = $this->getEntityManager()->createQuery("UPDATE TSSAutomailerBundle:Automailer am SET am.isSending = false WHERE am.isSending = true AND am.startedSendingAt <= :timeout_date")
 				->setParameter('timeout_date', $timeoutDate);
 
-		return $query->getResult();
+		return $query->execute();
     }
 }
