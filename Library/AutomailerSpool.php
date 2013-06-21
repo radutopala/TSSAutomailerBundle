@@ -64,7 +64,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     	$mail->setToEmail($toArrayKeys[0]);
     	$mail->setBody($message->getBody());
     	$mail->setAltBody(strip_tags($message->getBody()));
-    	$mail->setIsHtml(($message->getContentType()=='text/html')?1:0);    
+    	$mail->setIsHtml(($message->getContentType()=='text/html') ? true : false);    
     	$mail->setSwiftMessage($message);	
     	
     	$this->_em->persist($mail);

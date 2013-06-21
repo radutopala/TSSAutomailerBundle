@@ -126,10 +126,10 @@ class Automailer
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->isHtml = 1;
-        $this->isSending = 0;
-        $this->isSent = 0;
-        $this->isFailed = 0;
+        $this->isHtml = true;
+        $this->isSending = false;
+        $this->isSent = false;
+        $this->isFailed = false;
     }
         
     /**
