@@ -64,7 +64,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     	$mail->setToEmail($toArrayKeys[0]);
     	$mail->setBody($message->getBody());
     	$mail->setAltBody(strip_tags($message->getBody()));
-    	$mail->setIsHtml(($message->getContentType()=='text/html')?1:0);    
+    	$mail->setIsHtml(($message->getContentType()=='text/html') ? true : false);    
     	$mail->setSwiftMessage($message);	
     	
     	$this->_em->persist($mail);
@@ -97,14 +97,14 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         $count = 0;
         $time = time();
         
-        $limit = !$this->getMessageLimit()? 50 : $this->getMessageLimit();
+        $limit = !$this->getMessageLimit() ? 50 : $this->getMessageLimit();
         
         $mails = $this->_em->getRepository("TSSAutomailerBundle:Automailer")->findNext($limit);
 
         //first mark all for sending
         foreach ($mails as $mail) {
             
-            $mail->setIsSending(1);
+            $mail->setIsSending(true);
             $mail->setStartedSendingAt(new \DateTime());
             $this->_em->persist($mail);
             $this->_em->flush();
@@ -115,15 +115,15 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
             {
                 $count++;
                 
-                $mail->setIsSending(0);
-                $mail->setIsSent(1);
+                $mail->setIsSending(false);
+                $mail->setIsSent(true);
                 $mail->setSentAt(new \DateTime());
                 $this->_em->persist($mail);
                 $this->_em->flush();
             }
             else {
-                $mail->setIsSending(0);
-                $mail->setIsFailed(1);
+                $mail->setIsSending(false);
+                $mail->setIsFailed(true);
                 $this->_em->persist($mail);
                 $this->_em->flush();
             }
