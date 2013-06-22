@@ -436,7 +436,7 @@ class Automailer
      */
     public function setSwiftMessage($swiftMessage)
     {
-        $this->swiftMessage = serialize($swiftMessage);
+        $this->swiftMessage = base64_encode(serialize($swiftMessage));
         return $this;
     }
 
@@ -447,6 +447,6 @@ class Automailer
      */
     public function getSwiftMessage()
     {
-        return unserialize($this->swiftMessage);
+        return unserialize(base64_decode($this->swiftMessage));
     }
 }
