@@ -6,7 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TSS\AutomailerBundle\Entity\Automailer
- * @ORM\Table(name="automailer")
+ * @ORM\Table(
+ *     name="automailer",
+ *     indexes={
+ *         @ORM\Index(name="find_next", columns={"is_sent", "is_failed", "is_sending", "created_at"}),
+ *         @ORM\Index(name="recover_sending", columns={"is_sending", "started_sending_at"}),
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="TSS\AutomailerBundle\Entity\AutomailerRepository")
  */
 class Automailer
