@@ -6,7 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TSS\AutomailerBundle\Entity\Automailer
- * @ORM\Table(name="automailer")
+ * @ORM\Table(
+ *     name="automailer",
+ *     indexes={
+ *         @ORM\Index(name="find_next", columns={"is_sent", "is_failed", "is_sending", "created_at"}),
+ *         @ORM\Index(name="recover_sending", columns={"is_sending", "started_sending_at"}),
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="TSS\AutomailerBundle\Entity\AutomailerRepository")
  */
 class Automailer
@@ -126,10 +132,10 @@ class Automailer
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->isHtml = 1;
-        $this->isSending = 0;
-        $this->isSent = 0;
-        $this->isFailed = 0;
+        $this->isHtml = true;
+        $this->isSending = false;
+        $this->isSent = false;
+        $this->isFailed = false;
     }
         
     /**
@@ -436,7 +442,7 @@ class Automailer
      */
     public function setSwiftMessage($swiftMessage)
     {
-        $this->swiftMessage = serialize($swiftMessage);
+        $this->swiftMessage = base64_encode(serialize($swiftMessage));
         return $this;
     }
 
@@ -447,6 +453,6 @@ class Automailer
      */
     public function getSwiftMessage()
     {
-        return unserialize($this->swiftMessage);
+        return unserialize(base64_decode($this->swiftMessage));
     }
 }

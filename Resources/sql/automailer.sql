@@ -13,5 +13,7 @@ CREATE TABLE IF NOT EXISTS `automailer` (
   `alt_body` longtext NOT NULL,
   `is_sending` tinyint(1) DEFAULT NULL,
   `swift_message` longtext NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `find_next` (`is_sent`,`is_failed`,`is_sending`,`created_at`),
+  KEY `recover_sending` (`is_sending`,`started_sending_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
