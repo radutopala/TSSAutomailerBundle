@@ -63,7 +63,15 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     	$toArrayKeys = array_keys($toArray);
     	$mail->setToEmail($toArrayKeys[0]);
     	$mail->setBody($message->getBody());
-    	$mail->setAltBody(strip_tags($message->getBody()));
+        $mail->setAltBody(strip_tags(preg_replace(
+            array(
+                '@<head[^>]*?>.*?</head>@siu',
+                '@<style[^>]*?>.*?</style>@siu',
+                '@<script[^>]*?.*?</script>@siu',
+                '@<noscript[^>]*?.*?</noscript>@siu',
+            ),
+            "",
+            $message->getBody())));
     	$mail->setIsHtml(($message->getContentType()=='text/html')?1:0);    
     	$mail->setSwiftMessage($message);	
     	
