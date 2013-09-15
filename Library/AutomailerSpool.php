@@ -58,7 +58,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     	$fromArray = $message->getFrom();
     	$fromArrayKeys = array_keys($fromArray);
     	$mail->setFromEmail($fromArrayKeys[0]);
-    	$mail->setFromName($fromArray[$fromArrayKeys[0]]);
+        $mail->setFromName(isset($fromArray[$fromArrayKeys[0]])?$fromArray[$fromArrayKeys[0]] : $fromArrayKeys[0]);
     	$toArray = $message->getTo();
     	$toArrayKeys = array_keys($toArray);
     	$mail->setToEmail($toArrayKeys[0]);
