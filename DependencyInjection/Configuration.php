@@ -20,7 +20,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('beanstalk')->defaultValue(0)->end()
+                ->scalarNode('manager')
+                    ->defaultValue('doctrine.orm.entity_manager')
+                ->end()
+                ->scalarNode('beanstalk')
+                    ->defaultValue(0)
+                ->end()
             ->end()
         ;
 

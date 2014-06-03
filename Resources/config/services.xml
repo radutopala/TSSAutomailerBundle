@@ -11,7 +11,7 @@
 
     <services>
         <service id="swiftmailer.spool.automailer" class="%swiftmailer.spool.automailer.class%" public="false">
-            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="service_container" />
         </service>
 
         <service id="swiftmailer.mailer.default.spool.automailer" alias="swiftmailer.spool.automailer" />

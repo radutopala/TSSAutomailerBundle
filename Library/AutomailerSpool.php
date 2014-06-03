@@ -2,23 +2,25 @@
 
 namespace TSS\AutomailerBundle\Library;
 
-use TSS\AutomailerBundle\Entity\Automailer as Am;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use TSS\AutomailerBundle\Entity\Automailer as AmEntity;
+use TSS\AutomailerBundle\Document\Automailer as AmDocument;
 
 class AutomailerSpool extends \Swift_ConfigurableSpool
 {
     /**
-     * The Entity Manager
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
-    private $_em;
+    private $container;
 
     /**
      * Create a new AutomailerSpool.
-     * @param  Doctrine\EntityManager $em
-     * @throws Swift_IoException
+     * @param ContainerInterface $container
+     * @throws \Swift_IoException
      */
-    public function __construct($em)
+    public function __construct(ContainerInterface $container)
     {
-        $this->_em = $em;
+        $this->container = $container;
     }
 
     /**
@@ -46,14 +48,42 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     }
 
     /**
+     * @return AmEntity|AmDocument
+     * @throws \InvalidArgumentException
+     */
+    protected function newMail()
+    {
+        $manager = $this->getManager();
+        if ($manager instanceof \Doctrine\ORM\EntityManager) {
+            return new AmEntity();
+        } elseif ($manager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+            return new AmDocument();
+        } else {
+            throw new \InvalidArgumentException(sprintf('The class "%s" is not supported.', get_class($manager)));
+        }
+    }
+
+    protected function getManager()
+    {
+        return $this->container->get('tss_automailer.manager');
+    }
+
+    protected function save($mail)
+    {
+        $manager = $this->getManager();
+        $manager->persist($mail);
+        $manager->flush();
+    }
+
+    /**
      * Queues a message.
-     * @param  Swift_Mime_Message $message The message to store
+     * @param  \Swift_Mime_Message $message The message to store
      * @return boolean
-     * @throws Swift_IoException
+     * @throws \Swift_IoException
      */
     public function queueMessage(\Swift_Mime_Message $message)
     {
-        $mail = new Am;
+        $mail = $this->newMail();
     	$mail->setSubject($message->getSubject());
     	$fromArray = $message->getFrom();
     	$fromArrayKeys = array_keys($fromArray);
@@ -74,9 +104,8 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
             $message->getBody())));
     	$mail->setIsHtml(($message->getContentType()=='text/html') ? true : false);
     	$mail->setSwiftMessage($message);
-    	
-    	$this->_em->persist($mail);
-        $this->_em->flush();
+
+        $this->save($mail);
     }
 
     /**
@@ -84,14 +113,14 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
      */
     public function recover($timeout = 900)
     {
-        return $this->_em->getRepository("TSSAutomailerBundle:Automailer")->recoverSending($timeout);
+        return $this->getManager()->getRepository("TSSAutomailerBundle:Automailer")->recoverSending($timeout);
     }
 
     /**
      * Sends messages using the given transport instance.
      *
-     * @param Swift_Transport $transport A transport instance
-     * @param string[]        &$failedRecipients An array of failures by-reference
+     * @param \Swift_Transport $transport A transport instance
+     * @param string[] &$failedRecipients An array of failures by-reference
      *
      * @return int The number of sent emails
      */
@@ -106,35 +135,29 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         $time = time();
         
         $limit = !$this->getMessageLimit() ? 50 : $this->getMessageLimit();
-        
-        $mails = $this->_em->getRepository("TSSAutomailerBundle:Automailer")->findNext($limit);
+
+        $mails = $this->getManager()->getRepository("TSSAutomailerBundle:Automailer")->findNext($limit);
 
         //first mark all for sending
         foreach ($mails as $mail) {
-            
             $mail->setIsSending(true);
             $mail->setStartedSendingAt(new \DateTime());
-            $this->_em->persist($mail);
-            $this->_em->flush();
+            $this->save($mail);
         }
 
+        reset($mails);
+
         foreach ($mails as $mail) {
-            if($transport->send($mail->getSwiftMessage(), $failedRecipients))
-            {
+            if ($transport->send($mail->getSwiftMessage(), $failedRecipients)) {
                 $count++;
-                
                 $mail->setIsSending(false);
                 $mail->setIsSent(true);
                 $mail->setSentAt(new \DateTime());
-                $this->_em->persist($mail);
-                $this->_em->flush();
-            }
-            else {
+            } else {
                 $mail->setIsSending(false);
                 $mail->setIsFailed(true);
-                $this->_em->persist($mail);
-                $this->_em->flush();
             }
+            $this->save($mail);
 
             if ($this->getMessageLimit() && $count >= $this->getMessageLimit()) {
                 break;
