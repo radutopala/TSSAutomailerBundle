@@ -55,16 +55,22 @@ Installation instructions:
     
 Set a cron to execute the queue:
 
-    app/console swiftmailer:spool:send
+    app/console automailer:spool:send
     
 You can also test the spool by adding a new email with:
 
     app/console automailer:test --email=info@trisoft.ro
     
-Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with ```swiftmailer:spool:send``` to a queue/tube. This feature is activated automatically once a new email is sent through mailer, if pheanstalk is installed and if you add this inside ```./app/config.yml```:
+Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with ```automailer:spool:send``` to a queue/tube. This feature is activated automatically once a new email is sent through mailer, if pheanstalk is installed and if you add this inside ```./app/config.yml```:
 ```
 tss_automailer:
   beanstalk: true
+```
+
+You can also customize the entity manager:
+```
+tss_automailer:
+  manager: doctrine_mongodb.odm.document_manager
 ```
     
 Enjoy :)
