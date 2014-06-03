@@ -4,6 +4,7 @@ namespace TSS\AutomailerBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -28,5 +29,8 @@ class TSSAutomailerExtension extends Extension
         if ($config['beanstalk']) {
             $container->getDefinition('automailer.plugin.beanstalk')->addTag('swiftmailer.plugin');
         }
+
+        $container->setAlias('tss_automailer.manager', $config['manager']);
+        $container->setParameter('tss_automailer.manager', $config['manager']);
     }
 }
