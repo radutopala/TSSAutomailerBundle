@@ -1,129 +1,148 @@
 <?php
 
-namespace TSS\AutomailerBundle\Document;
-
+namespace TSS\AutomailerBundle\Model;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * TSS\AutomailerBundle\Document\Automailer
  * @ODM\Indexes({
- *   @ODM\Index(name="find_next", keys={"is_sent", "is_failed", "is_sending", "created_at"}),
- *   @ODM\Index(name="recover_sending", keys={"is_sending", "started_sending_at"}),
+ *     @ODM\Index(keys={"is_sent", "is_failed", "is_sending", "created_at"}),
+ *     @ODM\Index(keys={"is_sending", "started_sending_at"}),
  * })
- * @ODM\Document(collection="automailer", repositoryClass="TSS\AutomailerBundle\Document\AutomailerRepository")
+ * @ODM\MappedSuperclass(repositoryClass="TSS\AutomailerBundle\Model\ODMRepository")
+ * @ORM\Table(
+ *     name="automailer",
+ *     indexes={
+ *         @ORM\Index(name="find_next", columns={"is_sent", "is_failed", "is_sending", "created_at"}),
+ *         @ORM\Index(name="recover_sending", columns={"is_sending", "started_sending_at"}),
+ *     }
+ * )
+ * @ORM\MappedSuperclass(repositoryClass="TSS\AutomailerBundle\Model\ORMRepository")
  */
 class Automailer
 {
     /**
      * @ODM\Id
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @var integer $id
+     * @var int
      */
     private $id;
 
     /**
-     * @var string $fromEmail
+     * @var string
      *
      * @ODM\String(name="from_email", nullable=false)
+     * @ORM\Column(name="from_email", type="string", length=255, nullable=false)
      */
     private $fromEmail;
 
     /**
-     * @var string $fromName
+     * @var string
      *
      * @ODM\String(name="from_name")
+     * @ORM\Column(name="from_name", type="string", length=255)
      */
     private $fromName;
 
     /**
-     * @var string $toEmail
+     * @var string
      *
      * @ODM\String(name="to_email", nullable=false)
+     * @ORM\Column(name="to_email", type="string", length=255, nullable=false)
      */
     private $toEmail;
 
     /**
-     * @var text $subject
+     * @var string
      *
      * @ODM\String(name="subject", nullable=false)
-     *
+     * @ORM\Column(name="subject", type="text", nullable=false)
      */
     private $subject;
 
     /**
-     * @var text $body
+     * @var string
      *
      * @ODM\String(name="body", nullable=false)
-     *
+     * @ORM\Column(name="body", type="text", nullable=false)
      */
     private $body;
 
     /**
-     * @var text $altBody
+     * @var string
      *
      * @ODM\String(name="alt_body", nullable=false)
-     *
+     * @ORM\Column(name="alt_body", type="text", nullable=false)
      */
     private $altBody;
 
     /**
-     * @var text $swift_message
+     * @var string
      *
      * @ODM\String(name="swift_message", nullable=false)
-     *
+     * @ORM\Column(name="swift_message", type="text", nullable=false)
      */
     private $swiftMessage;
 
     /**
-     * @var datetime $createdAt
+     * @var \DateTime
      *
      * @ODM\Date(name="created_at", nullable=false)
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
-     * @var datetime $sentAt
+     * @var \DateTime
      *
      * @ODM\Date(name="sent_at", nullable=true)
+     * @ORM\Column(name="sent_at", type="datetime", nullable=true)
      */
     private $sentAt;
 
     /**
-     * @var datetime $startedSendingAt
+     * @var \DateTime
      *
      * @ODM\Date(name="started_sending_at", nullable=true)
+     * @ORM\Column(name="started_sending_at", type="datetime", nullable=true)
      */
     private $startedSendingAt;
 
     /**
-     * @var boolean $isHtml
+     * @var bool
      *
      * @ODM\Boolean(name="is_html", nullable=false)
+     * @ORM\Column(name="is_html", type="boolean", nullable=false)
      */
     private $isHtml;
 
     /**
-     * @var boolean $isSending
+     * @var bool
      *
      * @ODM\Boolean(name="is_sending", nullable=true)
+     * @ORM\Column(name="is_sending", type="boolean", nullable=true)
      */
     private $isSending;
 
     /**
-     * @var boolean $isSent
+     * @var bool
      *
      * @ODM\Boolean(name="is_sent", nullable=true)
+     * @ORM\Column(name="is_sent", type="boolean", nullable=true)
      */
     private $isSent;
 
     /**
-     * @var boolean $isFailed
+     * @var bool
      *
      * @ODM\Boolean(name="is_failed", nullable=true)
+     * @ORM\Column(name="is_failed", type="boolean", nullable=true)
      */
     private $isFailed;
-
 
     public function __construct()
     {
@@ -135,9 +154,9 @@ class Automailer
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -145,19 +164,21 @@ class Automailer
     }
 
     /**
-     * Set fromEmail
+     * Set fromEmail.
      *
      * @param string $fromEmail
+     *
      * @return Automailer
      */
     public function setFromEmail($fromEmail)
     {
         $this->fromEmail = $fromEmail;
+
         return $this;
     }
 
     /**
-     * Get fromEmail
+     * Get fromEmail.
      *
      * @return string
      */
@@ -167,19 +188,21 @@ class Automailer
     }
 
     /**
-     * Set fromName
+     * Set fromName.
      *
      * @param string $fromName
+     *
      * @return Automailer
      */
     public function setFromName($fromName)
     {
         $this->fromName = $fromName;
+
         return $this;
     }
 
     /**
-     * Get fromName
+     * Get fromName.
      *
      * @return string
      */
@@ -189,19 +212,21 @@ class Automailer
     }
 
     /**
-     * Set toEmail
+     * Set toEmail.
      *
      * @param string $toEmail
+     *
      * @return Automailer
      */
     public function setToEmail($toEmail)
     {
         $this->toEmail = $toEmail;
+
         return $this;
     }
 
     /**
-     * Get toEmail
+     * Get toEmail.
      *
      * @return string
      */
@@ -211,19 +236,21 @@ class Automailer
     }
 
     /**
-     * Set subject
+     * Set subject.
      *
      * @param text $subject
+     *
      * @return Automailer
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
         return $this;
     }
 
     /**
-     * Get subject
+     * Get subject.
      *
      * @return text
      */
@@ -233,19 +260,21 @@ class Automailer
     }
 
     /**
-     * Set body
+     * Set body.
      *
      * @param text $body
+     *
      * @return Automailer
      */
     public function setBody($body)
     {
         $this->body = $body;
+
         return $this;
     }
 
     /**
-     * Get body
+     * Get body.
      *
      * @return text
      */
@@ -255,19 +284,21 @@ class Automailer
     }
 
     /**
-     * Set altBody
+     * Set altBody.
      *
      * @param text $altBody
+     *
      * @return Automailer
      */
     public function setAltBody($altBody)
     {
         $this->altBody = $altBody;
+
         return $this;
     }
 
     /**
-     * Get altBody
+     * Get altBody.
      *
      * @return text
      */
@@ -277,19 +308,21 @@ class Automailer
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param datetime $createdAt
+     *
      * @return Automailer
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return datetime
      */
@@ -299,19 +332,21 @@ class Automailer
     }
 
     /**
-     * Set sentAt
+     * Set sentAt.
      *
      * @param datetime $sentAt
+     *
      * @return Automailer
      */
     public function setSentAt($sentAt)
     {
         $this->sentAt = $sentAt;
+
         return $this;
     }
 
     /**
-     * Get sentAt
+     * Get sentAt.
      *
      * @return datetime
      */
@@ -321,7 +356,7 @@ class Automailer
     }
 
     /**
-     * Get startedSendingAt
+     * Get startedSendingAt.
      *
      * @return datetime
      */
@@ -331,33 +366,37 @@ class Automailer
     }
 
     /**
-     * Set startedSendingAt
+     * Set startedSendingAt.
      *
      * @param datetime $startedSendingAt
+     *
      * @return Automailer
      */
     public function setStartedSendingAt($startedSendingAt)
     {
         $this->startedSendingAt = $startedSendingAt;
+
         return $this;
     }
 
     /**
-     * Set isHtml
+     * Set isHtml.
      *
-     * @param boolean $isHtml
+     * @param bool $isHtml
+     *
      * @return Automailer
      */
     public function setIsHtml($isHtml)
     {
         $this->isHtml = $isHtml;
+
         return $this;
     }
 
     /**
-     * Get isHtml
+     * Get isHtml.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsHtml()
     {
@@ -365,21 +404,23 @@ class Automailer
     }
 
     /**
-     * Set isSent
+     * Set isSent.
      *
-     * @param boolean $isSent
+     * @param bool $isSent
+     *
      * @return Automailer
      */
     public function setIsSent($isSent)
     {
         $this->isSent = $isSent;
+
         return $this;
     }
 
     /**
-     * Get isSent
+     * Get isSent.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsSent()
     {
@@ -387,21 +428,23 @@ class Automailer
     }
 
     /**
-     * Set isFailed
+     * Set isFailed.
      *
-     * @param boolean $isFailed
+     * @param bool $isFailed
+     *
      * @return Automailer
      */
     public function setIsFailed($isFailed)
     {
         $this->isFailed = $isFailed;
+
         return $this;
     }
 
     /**
-     * Get isFailed
+     * Get isFailed.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsFailed()
     {
@@ -409,21 +452,23 @@ class Automailer
     }
 
     /**
-     * Set isSending
+     * Set isSending.
      *
-     * @param boolean $isSending
+     * @param bool $isSending
+     *
      * @return Automailer
      */
     public function setIsSending($isSending)
     {
-        $this->isSending = (bool)$isSending;
+        $this->isSending = $isSending;
+
         return $this;
     }
 
     /**
-     * Get isSending
+     * Get isSending.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsSending()
     {
@@ -431,19 +476,21 @@ class Automailer
     }
 
     /**
-     * Set swiftMessage
+     * Set swiftMessage.
      *
-     * @param text $swiftMessage
+     * @param \Swift_Mime_Message $swiftMessage
+     *
      * @return Automailer
      */
     public function setSwiftMessage($swiftMessage)
     {
         $this->swiftMessage = base64_encode(serialize($swiftMessage));
+
         return $this;
     }
 
     /**
-     * Get swiftMessage
+     * Get swiftMessage.
      *
      * @return text
      */

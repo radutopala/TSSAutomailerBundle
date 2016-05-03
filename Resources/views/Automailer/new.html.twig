@@ -1,11 +1,11 @@
 <h1>Automailer creation</h1>
 
-<form action="{{ path('automailer_create') }}" method="post" {{ form_enctype(form) }}>
+{{ form_start(form, {action: path('automailer_create')}) }}
     {{ form_widget(form) }}
     <p>
         <button type="submit">Create</button>
     </p>
-</form>
+{{ form_end(form) }}
 
 <ul class="record_actions">
     <li>

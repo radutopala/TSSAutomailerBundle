@@ -4,14 +4,15 @@ namespace TSS\AutomailerBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use TSS\AutomailerBundle\DefaultEntity\Automailer;
 
 /**
- * This is the class that validates and merges configuration from your app/config files
+ * This is the class that validates and merges configuration from your app/config files.
  */
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -20,11 +21,20 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('class')
+                    ->defaultValue(Automailer::class)
+                ->end()
                 ->scalarNode('manager')
                     ->defaultValue('doctrine.orm.entity_manager')
                 ->end()
-                ->scalarNode('beanstalk')
-                    ->defaultValue(0)
+                ->booleanNode('disable_default_document')
+                    ->defaultFalse()
+                ->end()
+                ->booleanNode('disable_default_entity')
+                    ->defaultFalse()
+                ->end()
+                ->booleanNode('beanstalk')
+                    ->defaultValue(false)
                 ->end()
             ->end()
         ;

@@ -6,8 +6,18 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class AutomailerType extends AbstractType
+class AutomailerType extends AbstractType implements \Symfony\Component\Form\FormTypeInterface
 {
+    private $class;
+
+    /**
+     * @param string $class
+     */
+    public function __construct($class)
+    {
+        $this->class = $class;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -28,12 +38,12 @@ class AutomailerType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'TSS\AutomailerBundle\Entity\Automailer'
+            'data_class' => $this->class,
         ));
     }
 
     public function getName()
     {
-        return 'tss_automailerbundle_automailertype';
+        return 'automailer';
     }
 }

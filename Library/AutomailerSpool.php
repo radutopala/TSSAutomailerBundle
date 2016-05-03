@@ -13,20 +13,25 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
      */
     private $container;
 
+    private $automailerClass;
+
     /**
      * Create a new AutomailerSpool.
+     *
      * @param ContainerInterface $container
+     *
      * @throws \Swift_IoException
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->automailerClass = $container->getParameter('tss_automailer.class');
     }
 
     /**
      * Tests if this Spool mechanism has started.
      *
-     * @return boolean
+     * @return bool
      */
     public function isStarted()
     {
@@ -49,18 +54,14 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
 
     /**
      * @return AmEntity|AmDocument
+     *
      * @throws \InvalidArgumentException
      */
     protected function newMail()
     {
-        $manager = $this->getManager();
-        if ($manager instanceof \Doctrine\ORM\EntityManager) {
-            return new AmEntity();
-        } elseif ($manager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-            return new AmDocument();
-        } else {
-            throw new \InvalidArgumentException(sprintf('The class "%s" is not supported.', get_class($manager)));
-        }
+        $class = $this->container->getParameter('tss_automailer.class');
+
+        return new $class();
     }
 
     protected function getManager()
@@ -77,22 +78,25 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
 
     /**
      * Queues a message.
-     * @param  \Swift_Mime_Message $message The message to store
-     * @return boolean
+     *
+     * @param \Swift_Mime_Message $message The message to store
+     *
+     * @return bool
+     *
      * @throws \Swift_IoException
      */
     public function queueMessage(\Swift_Mime_Message $message)
     {
         $mail = $this->newMail();
-    	$mail->setSubject($message->getSubject());
-    	$fromArray = $message->getFrom();
-    	$fromArrayKeys = array_keys($fromArray);
-    	$mail->setFromEmail($fromArrayKeys[0]);
-        $mail->setFromName(isset($fromArray[$fromArrayKeys[0]])?$fromArray[$fromArrayKeys[0]] : $fromArrayKeys[0]);
-    	$toArray = $message->getTo();
-    	$toArrayKeys = array_keys($toArray);
-    	$mail->setToEmail($toArrayKeys[0]);
-    	$mail->setBody($message->getBody());
+        $mail->setSubject($message->getSubject());
+        $fromArray = $message->getFrom();
+        $fromArrayKeys = array_keys($fromArray);
+        $mail->setFromEmail($fromArrayKeys[0]);
+        $mail->setFromName(isset($fromArray[$fromArrayKeys[0]]) ? $fromArray[$fromArrayKeys[0]] : $fromArrayKeys[0]);
+        $toArray = $message->getTo();
+        $toArrayKeys = array_keys($toArray);
+        $mail->setToEmail($toArrayKeys[0]);
+        $mail->setBody($message->getBody());
         $mail->setAltBody(strip_tags(preg_replace(
             array(
                 '@<head[^>]*?>.*?</head>@siu',
@@ -100,27 +104,27 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
                 '@<script[^>]*?.*?</script>@siu',
                 '@<noscript[^>]*?.*?</noscript>@siu',
             ),
-            "",
+            '',
             $message->getBody())));
-    	$mail->setIsHtml(($message->getContentType()=='text/html') ? true : false);
-    	$mail->setSwiftMessage($message);
+        $mail->setIsHtml(($message->getContentType() == 'text/html') ? true : false);
+        $mail->setSwiftMessage($message);
 
         $this->save($mail);
     }
 
     /**
-     * Execute a recovery if for anyreason a process is sending for too long
+     * Execute a recovery if for anyreason a process is sending for too long.
      */
     public function recover($timeout = 900)
     {
-        return $this->getManager()->getRepository("TSSAutomailerBundle:Automailer")->recoverSending($timeout);
+        return $this->getManager()->getRepository($this->automailerClass)->recoverSending($timeout);
     }
 
     /**
      * Sends messages using the given transport instance.
      *
-     * @param \Swift_Transport $transport A transport instance
-     * @param string[] &$failedRecipients An array of failures by-reference
+     * @param \Swift_Transport $transport         A transport instance
+     * @param string[]         &$failedRecipients An array of failures by-reference
      *
      * @return int The number of sent emails
      */
@@ -133,10 +137,10 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         $failedRecipients = (array) $failedRecipients;
         $count = 0;
         $time = time();
-        
+
         $limit = !$this->getMessageLimit() ? 50 : $this->getMessageLimit();
 
-        $mails = $this->getManager()->getRepository("TSSAutomailerBundle:Automailer")->findNext($limit);
+        $mails = $this->getManager()->getRepository($this->automailerClass)->findNext($limit);
 
         //first mark all for sending
         foreach ($mails as $mail) {
@@ -149,7 +153,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
 
         foreach ($mails as $mail) {
             if ($transport->send($mail->getSwiftMessage(), $failedRecipients)) {
-                $count++;
+                ++$count;
                 $mail->setIsSending(false);
                 $mail->setIsSent(true);
                 $mail->setSentAt(new \DateTime());

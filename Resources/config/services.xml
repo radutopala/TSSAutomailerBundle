@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="swiftmailer.spool.automailer.class">TSS\AutomailerBundle\Library\AutomailerSpool</parameter>
         <parameter key="automailer.plugin.beanstalk.class">TSS\AutomailerBundle\Library\BeanstalkPlugin</parameter>
+        <parameter key="automailer.form.class">TSS\AutomailerBundle\Form\AutomailerType</parameter>
     </parameters>
 
     <services>
@@ -18,6 +19,11 @@
 
         <service id="automailer.plugin.beanstalk" class="%automailer.plugin.beanstalk.class%" public="false">
             <argument type="service" id="service_container" />
+        </service>
+
+        <service id="automailer.form" class="%automailer.form.class%">
+            <argument>%tss_automailer.class%</argument>
+            <tag name="form.type" alias="automailer" />
         </service>
     </services>
     

@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\Request;
 use TSS\AutomailerBundle\Entity\Automailer;
 use TSS\AutomailerBundle\Form\AutomailerType;
 
@@ -16,6 +18,16 @@ use TSS\AutomailerBundle\Form\AutomailerType;
  */
 class AutomailerController extends Controller
 {
+    private function getRepository()
+    {
+        return $this
+            ->getDoctrine()
+            ->getRepository(
+                $this->container->getParameter('tss_automailer.class')
+            )
+        ;
+    }
+
     /**
      * Lists all Automailer entities.
      *
@@ -24,9 +36,7 @@ class AutomailerController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('TSSAutomailerBundle:Automailer')->findAll();
+        $entities = $this->getRepository()->findAll();
 
         return array(
             'entities' => $entities,
@@ -41,9 +51,7 @@ class AutomailerController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('TSSAutomailerBundle:Automailer')->find($id);
+        $entity = $this->getRepository()->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Automailer entity.');
@@ -52,7 +60,7 @@ class AutomailerController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -65,12 +73,13 @@ class AutomailerController extends Controller
      */
     public function newAction()
     {
-        $entity = new Automailer();
-        $form   = $this->createForm(new AutomailerType(), $entity);
+        $class = $this->container->getParameter('tss_automailer.class');
+        $entity = new $class();
+        $form = $this->createForm(\TSS\AutomailerBundle\Form\AutomailerType::class, $entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -81,15 +90,20 @@ class AutomailerController extends Controller
      * @Method("post")
      * @Template("TSSAutomailerBundle:Automailer:new.html.twig")
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
-        $entity  = new Automailer();
-        $request = $this->getRequest();
-        $form    = $this->createForm(new AutomailerType(), $entity);
-        $form->bindRequest($request);
+        $class = $this->container->getParameter('tss_automailer.class');
+        $entity = new $class();
+        $form = $this->createForm(\TSS\AutomailerBundle\Form\AutomailerType::class, $entity);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $message = new \Swift_Message();
+            $message->setFrom($entity->getFromEmail(), $entity->getFromName());
+            $message->setTo($entity->getToEmail());
+            $message->setBody($entity->getBody());
+            $entity->setSwiftMessage($message);
             $em->persist($entity);
             $em->flush();
 
@@ -98,7 +112,7 @@ class AutomailerController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -110,20 +124,18 @@ class AutomailerController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('TSSAutomailerBundle:Automailer')->find($id);
+        $entity = $this->getRepository()->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Automailer entity.');
         }
 
-        $editForm = $this->createForm(new AutomailerType(), $entity);
+        $editForm = $this->createForm(AutomailerType::class, $entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -135,24 +147,27 @@ class AutomailerController extends Controller
      * @Method("post")
      * @Template("TSSAutomailerBundle:Automailer:edit.html.twig")
      */
-    public function updateAction($id)
+    public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('TSSAutomailerBundle:Automailer')->find($id);
+        $entity = $this->getRepository()->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Automailer entity.');
         }
 
-        $editForm   = $this->createForm(new AutomailerType(), $entity);
+        $editForm = $this->createForm(AutomailerType::class, $entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        $request = $this->getRequest();
-
-        $editForm->bindRequest($request);
+        $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $message = new \Swift_Message();
+            $message->setFrom($entity->getFromEmail(), $entity->getFromName());
+            $message->setTo($entity->getToEmail());
+            $message->setBody($entity->getBody());
+            $entity->setSwiftMessage($message);
             $em->persist($entity);
             $em->flush();
 
@@ -160,8 +175,8 @@ class AutomailerController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -172,16 +187,15 @@ class AutomailerController extends Controller
      * @Route("/{id}/delete", name="automailer_delete")
      * @Method("post")
      */
-    public function deleteAction($id)
+    public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
-        $request = $this->getRequest();
 
-        $form->bindRequest($request);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('TSSAutomailerBundle:Automailer')->find($id);
+            $entity = $this->getRepository()->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Automailer entity.');
@@ -197,7 +211,7 @@ class AutomailerController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
+            ->add('id', HiddenType::class)
             ->getForm()
         ;
     }

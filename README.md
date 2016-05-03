@@ -5,72 +5,78 @@ Swiftmailer Spool for Doctrine packaged into a Symfony2 Bundle
 
 Installation instructions:
 
-- Easiest way to install is via composer, add those lines to ```./composer.json```:
-    
-    
-      ```
-      "require": {
-        ...
-        "tss/automailer-bundle": "dev-master"
-      }
+- Easiest way to install is via composer, add those lines to `./composer.json`:
+
+```
+"require": {
+    ...
+    "tss/automailer-bundle": "dev-master"
+}
 ```
 
- 
-  and then run ```composer.phar install```
+and then run `composer.phar install`
 
-- Then enable the bundle in ```./app/AppKernel.php```:
-    
-    ```
-    public function registerBundles()
-    {
-        $bundles = array(
-                ...
-                new TSS\AutomailerBundle\TSSAutomailerBundle(),
-            );
-    }
+- Then enable the bundle in `./app/AppKernel.php`:
+
+```
+public function registerBundles()
+{
+    $bundles = [
+        ...
+        new TSS\AutomailerBundle\TSSAutomailerBundle(),
+    ];
+}
 ```
 
-- If your project uses Entity Manager mappings, you need to include TSSAutomailerBundle as well, in ```./app/config.yml```:
+- Change Swiftmailer spool type in `./app/config.yml`:
 
-    ```
-    orm:
-        ...
-        entity_managers:
-            default:
-                connection: default
-                mappings:
-                    ...
-                    TSSAutomailerBundle: ~
+```
+swiftmailer:
+  ...
+  spool:     { type: automailer }
+```
 
-- Change Swiftmailer spool type in ```./app/config.yml```:
-
-    ```
-    swiftmailer:
-      ...
-      spool:     { type: automailer }
-      
 - Update your db with Bundle's entity:
 
-    ```app/console doctrine:schema:update --force```
-    
+```
+app/console doctrine:schema:update --force
+```
+
 Set a cron to execute the queue:
 
-    app/console automailer:spool:send
-    
+```
+app/console automailer:spool:send
+```
+
 You can also test the spool by adding a new email with:
 
-    app/console automailer:test --email=info@trisoft.ro
-    
-Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with ```automailer:spool:send``` to a queue/tube. This feature is activated automatically once a new email is sent through mailer, if pheanstalk is installed and if you add this inside ```./app/config.yml```:
+```
+app/console automailer:test --email=info@trisoft.ro
+```
+
+Automailer has also a Beanstalk integration feature, which uses pheanstalk to send a job with `automailer:spool:send` to a queue/tube. This feature is activated automatically once a new email is sent through mailer, if pheanstalk is installed and if you add this inside `./app/config.yml`:
+
 ```
 tss_automailer:
-  beanstalk: true
+    beanstalk: true
 ```
 
 You can also customize the entity manager:
+
 ```
 tss_automailer:
-  manager: doctrine_mongodb.odm.document_manager
+    manager: doctrine_mongodb.odm.document_manager
 ```
-    
+
+You can easily customize the class used for the entity or document by simply configuring the class in `config.yml` and disabling the relevant functionality like this:
+
+```
+tss_automailer:
+    class: AppBundle\Entity\Automailer # or AppBundle\Document\Automailer
+    disable_default_document: true # this disabled the default document so that you can use your own
+    disable_default_entity: true # this disabled the default entity so that you can use your own
+```
+
+In order to customize the entity or document that you wish to use with your own functionality, you can do so by extending `TSS\Automailer\Model\Automailer` and adding the relevant `@ODM\Document()` or `@ORM\Entity()` annotation to your class.
+
 Enjoy :)

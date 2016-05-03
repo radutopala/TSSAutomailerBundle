@@ -3,14 +3,12 @@
 namespace TSS\AutomailerBundle\Library;
 
 /**
- * Beanstalk queuing plugin for Swiftmailer
+ * Beanstalk queuing plugin for Swiftmailer.
  *
- * @package    Automailer
  * @author     Radu Topala
  */
 class BeanstalkPlugin implements \Swift_Events_SendListener
 {
-
     public $container;
 
     public function __construct($container)
@@ -32,14 +30,14 @@ class BeanstalkPlugin implements \Swift_Events_SendListener
      */
     public function sendPerformed(\Swift_Events_SendEvent $evt)
     {
-        if($this->container->has("leezy.pheanstalk")) {
+        if ($this->container->has('leezy.pheanstalk')) {
 
             //put a job into pheanstalk default connection, in automailer queue
-            $pheanstalk = $this->container->get("leezy.pheanstalk");
+            $pheanstalk = $this->container->get('leezy.pheanstalk');
 
             $pheanstalk
                 ->useTube('automailer')
-                ->put("automailer:spool:send --time-limit=10");
+                ->put('automailer:spool:send --time-limit=10');
         }
     }
 }

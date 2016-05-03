@@ -1,13 +1,10 @@
 <?php
 
-namespace TSS\AutomailerBundle\Document;
+namespace TSS\AutomailerBundle\Model;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
 
-/**
- * AutomailerRepository
- */
-class AutomailerRepository extends DocumentRepository
+class ODMRepository extends DocumentRepository
 {
     public function findNext($limit)
     {
@@ -21,12 +18,12 @@ class AutomailerRepository extends DocumentRepository
 
         $qb->sort('createdAt', 1);
 
-        /**
+        /*
          * Unless we convert to array, sending will fail without a reset() call in the AutomailerSpool
          */
         return iterator_to_array($qb->getQuery()->execute());
     }
-    
+
     public function recoverSending($timeout = 900)
     {
         $timeoutDate = new \DateTime();
@@ -40,7 +37,6 @@ class AutomailerRepository extends DocumentRepository
         $qb->field('startedSendingAt')->lte($timeoutDate);
 
         $qb->field('isSending')->set(false);
-
 
         return $qb->getQuery()->execute();
     }

@@ -4,19 +4,18 @@ namespace TSS\AutomailerBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
+ * This is the class that loads and manages your bundle configuration.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
 class TSSAutomailerExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -28,6 +27,17 @@ class TSSAutomailerExtension extends Extension
 
         if ($config['beanstalk']) {
             $container->getDefinition('automailer.plugin.beanstalk')->addTag('swiftmailer.plugin');
+        }
+
+        $skipKeysIfTrue = [
+            'disable_default_entity',
+            'disable_default_document',
+        ];
+        foreach ($config as $key => $value) {
+            if (in_array($key, $skipKeysIfTrue) && $value) {
+                continue;
+            }
+            $container->setParameter('tss_automailer.'.$key, $value);
         }
 
         $container->setAlias('tss_automailer.manager', $config['manager']);
