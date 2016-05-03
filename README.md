@@ -72,9 +72,9 @@ You can easily customize the class used for the entity or document by simply con
 
 ```
 tss_automailer:
-    class: AppBundle\Entity\Automailer # or AppBundle\Document\Automailer
-    disable_default_document: true # this disabled the default document so that you can use your own
-    disable_default_entity: true # this disabled the default entity so that you can use your own
+    class: AppBundle\Entity\Automailer # or AppBundle\Document\Automailer, your specific path to your entity or document
+    disable_default_document: true # disables the default document so that you can use your own
+    disable_default_entity: true # disables the default entity so that you can use your own
 ```
 
 In order to customize the entity or document that you wish to use with your own functionality, you can do so by extending `TSS\Automailer\Model\Automailer` and adding the relevant `@ODM\Document()` or `@ORM\Entity()` annotation to your class.
