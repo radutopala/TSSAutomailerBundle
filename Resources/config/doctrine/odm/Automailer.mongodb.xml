@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                                            http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+    <mapped-superclass name="TSS\AutomailerBundle\Model\Automailer" collection="automailer" repository-class="TSS\AutomailerBundle\Model\ODMRepository">
+        <field fieldName="id" name="id" id="true" />
+        <field fieldName="fromEmail" name="from_email" type="string" />
+        <field fieldName="fromName" name="from_name" type="string" />
+        <field fieldName="toEmail" name="to_email" type="string" />
+        <field fieldName="subject" name="subject" type="string" />
+        <field fieldName="body" name="body" type="string" />
+        <field fieldName="altBody" name="alt_body" type="string" />
+        <field fieldName="swiftMessage" name="swift_message" type="string" />
+        <field fieldName="createdAt" name="created_at" type="date" />
+        <field fieldName="sentAt" name="sent_at" type="date" />
+        <field fieldName="startedSendingAt" name="started_sending_at" type="date" />
+        <field fieldName="isHtml" name="is_html" type="boolean" />
+        <field fieldName="isSending" name="is_sending" type="boolean" />
+        <field fieldName="isSent" name="is_sent" type="boolean" />
+        <field fieldName="isFailed" name="is_failed" type="boolean" />
+        <indexes>
+            <index name="find_next">
+                <key name="is_sent" order="asc" />
+                <key name="is_failed" order="asc" />
+                <key name="is_sending" order="asc" />
+                <key name="created_at" order="asc" />
+            </index>
+            <index name="recover_sending">
+                <key name="is_sending" order="asc" />
+                <key name="started_sending_at" order="asc" />
+            </index>
+        </indexes>
+    </mapped-superclass>
+</doctrine-mongo-mapping>

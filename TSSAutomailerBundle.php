@@ -15,9 +15,8 @@ class TSSAutomailerBundle extends Bundle
 
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(
-                DoctrineOrmMappingsPass::createAnnotationMappingDriver(
-                    [__NAMESPACE__.'\\Model'],
-                    [__DIR__.DIRECTORY_SEPARATOR.'Model'],
+                DoctrineOrmMappingsPass::createXmlMappingDriver(
+                    [__DIR__.'/Resources/config/doctrine/orm' => __NAMESPACE__.'\\Model'],
                     [],
                     false
                 )
@@ -33,9 +32,8 @@ class TSSAutomailerBundle extends Bundle
         }
         if (class_exists('Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass')) {
             $container->addCompilerPass(
-                DoctrineMongoDBMappingsPass::createAnnotationMappingDriver(
-                    [__NAMESPACE__.'\\Model'],
-                    [__DIR__.DIRECTORY_SEPARATOR.'Model'],
+                DoctrineMongoDBMappingsPass::createXmlMappingDriver(
+                    [__DIR__.'/Resources/config/doctrine/odm' => __NAMESPACE__.'\\Model'],
                     [],
                     false
                 )

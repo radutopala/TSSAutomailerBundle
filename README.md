@@ -66,6 +66,7 @@ You can also customize the entity manager:
 ```
 tss_automailer:
     manager: doctrine_mongodb.odm.document_manager
+    class: TSS\AutomailerBundle\DefaultDocument\Automailer
 ```
 
 You can easily customize the class used for the entity or document by simply configuring the class in `config.yml` and disabling the relevant functionality like this:

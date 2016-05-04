@@ -105,7 +105,8 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
                 '@<noscript[^>]*?.*?</noscript>@siu',
             ),
             '',
-            $message->getBody())));
+            $message->getBody()
+        )));
         $mail->setIsHtml(($message->getContentType() == 'text/html') ? true : false);
         $mail->setSwiftMessage($message);
 

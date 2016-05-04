@@ -2,145 +2,80 @@
 
 namespace TSS\AutomailerBundle\Model;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ODM\Indexes({
- *     @ODM\Index(keys={"is_sent", "is_failed", "is_sending", "created_at"}),
- *     @ODM\Index(keys={"is_sending", "started_sending_at"}),
- * })
- * @ODM\MappedSuperclass(repositoryClass="TSS\AutomailerBundle\Model\ODMRepository")
- * @ORM\Table(
- *     name="automailer",
- *     indexes={
- *         @ORM\Index(name="find_next", columns={"is_sent", "is_failed", "is_sending", "created_at"}),
- *         @ORM\Index(name="recover_sending", columns={"is_sending", "started_sending_at"}),
- *     }
- * )
- * @ORM\MappedSuperclass(repositoryClass="TSS\AutomailerBundle\Model\ORMRepository")
- */
 class Automailer
 {
     /**
-     * @ODM\Id
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
      * @var int
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="from_email", nullable=false)
-     * @ORM\Column(name="from_email", type="string", length=255, nullable=false)
      */
     private $fromEmail;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="from_name")
-     * @ORM\Column(name="from_name", type="string", length=255)
      */
     private $fromName;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="to_email", nullable=false)
-     * @ORM\Column(name="to_email", type="string", length=255, nullable=false)
      */
     private $toEmail;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="subject", nullable=false)
-     * @ORM\Column(name="subject", type="text", nullable=false)
      */
     private $subject;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="body", nullable=false)
-     * @ORM\Column(name="body", type="text", nullable=false)
      */
     private $body;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="alt_body", nullable=false)
-     * @ORM\Column(name="alt_body", type="text", nullable=false)
      */
     private $altBody;
 
     /**
      * @var string
-     *
-     * @ODM\String(name="swift_message", nullable=false)
-     * @ORM\Column(name="swift_message", type="text", nullable=false)
      */
     private $swiftMessage;
 
     /**
      * @var \DateTime
-     *
-     * @ODM\Date(name="created_at", nullable=false)
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ODM\Date(name="sent_at", nullable=true)
-     * @ORM\Column(name="sent_at", type="datetime", nullable=true)
      */
     private $sentAt;
 
     /**
      * @var \DateTime
-     *
-     * @ODM\Date(name="started_sending_at", nullable=true)
-     * @ORM\Column(name="started_sending_at", type="datetime", nullable=true)
      */
     private $startedSendingAt;
 
     /**
      * @var bool
-     *
-     * @ODM\Boolean(name="is_html", nullable=false)
-     * @ORM\Column(name="is_html", type="boolean", nullable=false)
      */
     private $isHtml;
 
     /**
      * @var bool
-     *
-     * @ODM\Boolean(name="is_sending", nullable=true)
-     * @ORM\Column(name="is_sending", type="boolean", nullable=true)
      */
     private $isSending;
 
     /**
      * @var bool
-     *
-     * @ODM\Boolean(name="is_sent", nullable=true)
-     * @ORM\Column(name="is_sent", type="boolean", nullable=true)
      */
     private $isSent;
 
     /**
      * @var bool
-     *
-     * @ODM\Boolean(name="is_failed", nullable=true)
-     * @ORM\Column(name="is_failed", type="boolean", nullable=true)
      */
     private $isFailed;
 
@@ -238,7 +173,7 @@ class Automailer
     /**
      * Set subject.
      *
-     * @param text $subject
+     * @param string $subject
      *
      * @return Automailer
      */
@@ -252,7 +187,7 @@ class Automailer
     /**
      * Get subject.
      *
-     * @return text
+     * @return string
      */
     public function getSubject()
     {
@@ -262,7 +197,7 @@ class Automailer
     /**
      * Set body.
      *
-     * @param text $body
+     * @param string $body
      *
      * @return Automailer
      */
@@ -276,7 +211,7 @@ class Automailer
     /**
      * Get body.
      *
-     * @return text
+     * @return string
      */
     public function getBody()
     {
@@ -286,7 +221,7 @@ class Automailer
     /**
      * Set altBody.
      *
-     * @param text $altBody
+     * @param string $altBody
      *
      * @return Automailer
      */
@@ -300,7 +235,7 @@ class Automailer
     /**
      * Get altBody.
      *
-     * @return text
+     * @return string
      */
     public function getAltBody()
     {
@@ -310,7 +245,7 @@ class Automailer
     /**
      * Set createdAt.
      *
-     * @param datetime $createdAt
+     * @param \DateTime $createdAt
      *
      * @return Automailer
      */
@@ -324,7 +259,7 @@ class Automailer
     /**
      * Get createdAt.
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -334,7 +269,7 @@ class Automailer
     /**
      * Set sentAt.
      *
-     * @param datetime $sentAt
+     * @param \DateTime $sentAt
      *
      * @return Automailer
      */
@@ -348,7 +283,7 @@ class Automailer
     /**
      * Get sentAt.
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getSentAt()
     {
@@ -358,7 +293,7 @@ class Automailer
     /**
      * Get startedSendingAt.
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getStartedSendingAt()
     {
@@ -368,7 +303,7 @@ class Automailer
     /**
      * Set startedSendingAt.
      *
-     * @param datetime $startedSendingAt
+     * @param \DateTime $startedSendingAt
      *
      * @return Automailer
      */
@@ -492,7 +427,7 @@ class Automailer
     /**
      * Get swiftMessage.
      *
-     * @return text
+     * @return string
      */
     public function getSwiftMessage()
     {

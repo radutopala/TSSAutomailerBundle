@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                        http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="TSS\AutomailerBundle\Model\Automailer" table="automailer" repository-class="TSS\AutommailerBundle\Model\ORMRepository">
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+        <field column="from_email" name="fromEmail" type="string" length="255" nullable="false" />
+        <field column="from_name" name="fromName" type="string" length="255" />
+        <field column="to_email" name="toEmail" type="string" length="255" nullable="false" />
+        <field column="subject" name="subject" type="text" nullable="false" />
+        <field column="body" name="body" type="text" nullable="false" />
+        <field column="alt_body" name="altBody" type="text" nullable="false" />
+        <field column="swift_message" name="swiftMessage" type="text" nullable="false" />
+        <field column="created_at" name="createdAt" type="datetime" nullable="false" />
+        <field column="sent_at" name="sentAt" type="datetime" nullable="true" />
+        <field column="started_sending_at" name="startedSendingAt" type="datetime" nullable="true" />
+        <field column="is_html" name="isHtml" type="boolean" nullable="false" />
+        <field column="is_sending" name="isSending" type="boolean" nullable="true" />
+        <field column="is_sent" name="isSent" type="boolean" nullable="true" />
+        <field column="is_failed" name="isFailed" type="boolean" nullable="true" />
+
+        <indexes>
+            <index name="find_next" columns="is_sent,is_failed,is_sending,created_at" />
+            <index name="recover_sending" columns="is_sending,started_sending_at" />
+        </indexes>
+    </mapped-superclass>
+</doctrine-mapping>
