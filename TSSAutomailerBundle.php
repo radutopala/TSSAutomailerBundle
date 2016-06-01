@@ -26,7 +26,8 @@ class TSSAutomailerBundle extends Bundle
                     [__NAMESPACE__.'\\DefaultEntity'],
                     [__DIR__.DIRECTORY_SEPARATOR.'DefaultEntity'],
                     [],
-                    'tss_automailer.disable_default_entity'
+                    'tss_automailer.disable_default_entity',
+                    ['TSSAutomailerBundle' => 'TSS\AutomailerBundle\DefaultEntity']
                 )
             );
         }
@@ -43,7 +44,8 @@ class TSSAutomailerBundle extends Bundle
                     [__NAMESPACE__.'\\DefaultDocument'],
                     [__DIR__.DIRECTORY_SEPARATOR.'DefaultDocument'],
                     [],
-                    'tss_automailer.disable_default_document'
+                    'tss_automailer.disable_default_document',
+                    ['TSSAutomailerBundle' => 'TSS\AutomailerBundle\DefaultDocument']
                 )
             );
         }
