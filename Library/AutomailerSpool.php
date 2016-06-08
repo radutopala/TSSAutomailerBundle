@@ -159,15 +159,21 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         reset($mails);
 
         foreach ($mails as $mail) {
-            if ($transport->send($mail->getSwiftMessage(), $failedRecipients)) {
-                ++$count;
-                $mail->setIsSending(false);
-                $mail->setIsSent(true);
-                $mail->setSentAt(new \DateTime());
-            } else {
+            try {
+                if ($transport->send($mail->getSwiftMessage(), $failedRecipients)) {
+                    ++$count;
+                    $mail->setIsSending(false);
+                    $mail->setIsSent(true);
+                    $mail->setSentAt(new \DateTime());
+                } else {
+                    $mail->setIsSending(false);
+                    $mail->setIsFailed(true);
+                }
+            } catch (\Swift_SwiftException $e) {
                 $mail->setIsSending(false);
                 $mail->setIsFailed(true);
             }
+
             $this->save($mail);
 
             if ($this->getMessageLimit() && $count >= $this->getMessageLimit()) {
