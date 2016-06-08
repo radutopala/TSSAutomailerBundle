@@ -71,9 +71,15 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
 
     protected function save($mail)
     {
-        $manager = $this->getManager();
-        $manager->persist($mail);
-        $manager->flush();
+        try {
+            $manager = $this->getManager();
+            $manager->persist($mail);
+            $manager->flush();
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -110,7 +116,7 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
         $mail->setIsHtml(($message->getContentType() == 'text/html') ? true : false);
         $mail->setSwiftMessage($message);
 
-        $this->save($mail);
+        return $this->save($mail);
     }
 
     /**
