@@ -85,13 +85,13 @@ class AutomailerSpool extends \Swift_ConfigurableSpool
     /**
      * Queues a message.
      *
-     * @param \Swift_Mime_Message $message The message to store
+     * @param \Swift_Mime_SimpleMessage $message The message to store
      *
      * @return bool
      *
      * @throws \Swift_IoException
      */
-    public function queueMessage(\Swift_Mime_Message $message)
+    public function queueMessage(\Swift_Mime_SimpleMessage $message)
     {
         $mail = $this->newMail();
         $mail->setSubject($message->getSubject());

@@ -30,7 +30,7 @@ class EmailTestCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $message = \Swift_Message::newInstance();
+        $message = new \Swift_Message();
         $message->setSubject('Automailer test email '.uniqid());
         $message->setFrom('info@trisoft.ro', 'Tri Software Solutions');
         $message->setTo($input->getArgument('email'));
