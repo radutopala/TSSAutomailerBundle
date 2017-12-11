@@ -413,11 +413,11 @@ class Automailer
     /**
      * Set swiftMessage.
      *
-     * @param \Swift_Mime_Message $swiftMessage
+     * @param \Swift_Mime_SimpleMessage $swiftMessage
      *
      * @return Automailer
      */
-    public function setSwiftMessage($swiftMessage)
+    public function setSwiftMessage(\Swift_Mime_SimpleMessage $swiftMessage)
     {
         $this->swiftMessage = base64_encode(serialize($swiftMessage));
 
